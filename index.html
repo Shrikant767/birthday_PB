@@ -564,6 +564,7 @@
       .plate{ width:300px; }
       .cake-whole{ width:270px; height:160px; bottom:36px; }
       .candles-container{ width:230px; }
+      .gallery-item{ width:350px; height:350px; }
     }
     @media (max-width: 480px){
       .hero h1{ font-size:1.8rem; }
@@ -571,6 +572,7 @@
       .plate{ width:270px; }
       .cake-whole{ width:240px; height:150px; }
       .candles-container{ width:200px; }
+      .gallery-item{ width:280px; height:280px; }
     }
   </style>
 </head>
@@ -889,7 +891,7 @@
 
     function playSong() {
       const audio = document.getElementById('birthday-song');
-      audio.src = '/assets/birthday-song.mp3';
+      audio.src = 'assets/birthday-song.mp3';
       audio.play().catch(() => {
         console.log('Song file not found or cannot play. Put birthday-song.mp3 in /assets/.');
       });
