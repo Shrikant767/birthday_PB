@@ -527,6 +527,7 @@
       width:450px;
       height:450px;
     }
+    .gallery-item{ margin-left:auto; margin-right:auto; }
     .gallery-item:nth-child(odd){ margin-left:0; margin-right:auto; }
     .gallery-item:nth-child(even){ margin-left:auto; margin-right:0; }
     .gallery-item:hover{
@@ -564,7 +565,9 @@
       .plate{ width:300px; }
       .cake-whole{ width:270px; height:160px; bottom:36px; }
       .candles-container{ width:230px; }
-      .gallery-item{ width:350px; height:350px; padding:12px; }
+      .gallery-item{ width:90vw; height:90vw; max-width:350px; max-height:350px; padding:12px; margin-left:auto; margin-right:auto; }
+      .gallery-item:nth-child(odd){ margin-left:auto; margin-right:auto; }
+      .gallery-item:nth-child(even){ margin-left:auto; margin-right:auto; }
       .gallery-item img{ max-width:100%; max-height:100%; }
     }
     @media (max-width: 480px){
@@ -573,7 +576,9 @@
       .plate{ width:270px; }
       .cake-whole{ width:240px; height:150px; }
       .candles-container{ width:200px; }
-      .gallery-item{ width:280px; height:280px; padding:15px; }
+      .gallery-item{ width:85vw; height:85vw; max-width:280px; max-height:280px; padding:10px; margin-left:auto; margin-right:auto; }
+      .gallery-item:nth-child(odd){ margin-left:auto; margin-right:auto; }
+      .gallery-item:nth-child(even){ margin-left:auto; margin-right:auto; }
       .gallery-item img{ max-width:100%; max-height:100%; }
     }
   </style>
@@ -894,8 +899,9 @@
     function playSong() {
       const audio = document.getElementById('birthday-song');
       audio.src = 'assets/birthday-song.mp3';
-      audio.play().catch(() => {
-        console.log('Song file not found or cannot play. Put birthday-song.mp3 in /assets/.');
+      audio.load();
+      audio.play().catch((error) => {
+        console.error('Failed to play song:', error);
       });
     }
 
