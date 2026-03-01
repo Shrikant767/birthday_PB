@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday!</title>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);
+      color:#333;
+      min-height:100vh;
+      padding:20px;
+      overflow-x:hidden;
+      position:relative;
+    }
+    body::before{
+      content:'';
+      position:fixed; inset:0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(255, 105, 180, 0.10) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(102, 126, 234, 0.10) 0%, transparent 50%);
+      pointer-events:none;
+      z-index:-1;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInDown { from{opacity:0; transform:translateY(-30px)} to{opacity:1; transform:translateY(0)} }
+    @keyframes slideInUp { from{opacity:0; transform:translateY(50px)} to{opacity:1; transform:translateY(0)} }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+    @keyframes pulse-scale { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    @keyframes confetti-fall { to { transform: translateY(100vh) rotateZ(360deg); opacity: 0; } }
+    @keyframes candle-appear { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes knifeOverlayFade { 0%{opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
+    @keyframes knifeCutMotion{
+      0%   { transform: translateX(-150px) translateY(-16px) rotate(-16deg); }
+      25%  { transform: translateX(-15px)  translateY(-6px)  rotate(-10deg); }
+      42%  { transform: translateX(30px)   translateY(12px)  rotate(-7deg); }
+      78%  { transform: translateX(180px)  translateY(8px)   rotate(-5deg); }
+      100% { transform: translateX(330px)  translateY(-22px) rotate(-12deg); }
+    }
+    @keyframes slicePopFly{
+      0%   { transform: translate(0,0) rotate(0deg) scale(0.98); opacity: 0; }
+      10%  { opacity: 1; }
+      35%  { transform: translate(-22px,-18px) rotate(-6deg) scale(1.02); }
+      70%  { transform: translate(-140px,-70px) rotate(-18deg) scale(1.03); }
+      100% { transform: translate(-190px,-20px) rotate(-10deg) scale(1); opacity: 1; }
+    }
+    @keyframes sliceSettle{
+      0%   { transform: translate(-190px,-20px) rotate(-10deg); }
+      60%  { transform: translate(-190px,-14px) rotate(-10deg); }
+      100% { transform: translate(-190px,-20px) rotate(-10deg); }
+    }
+
+    /* ===== LAYOUT ===== */
+    .container{ max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+
+    section{
+      margin:40px 0;
+      padding:40px 30px;
+      background:white;
+      border-radius:20px;
+      box-shadow:0 15px 40px rgba(0,0,0,0.10);
+      animation:slideInUp 0.6s ease-out;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.5);
+    }
+
+    /* ===== HERO ===== */
+    .hero{
+      text-align:center;
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);
+      color:white;
+      margin-bottom:30px;
+      animation:fadeInDown 0.8s ease-out;
+      padding:60px 30px !important;
+      border-radius:0;
+      border:none;
+      box-shadow:none;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:'';
+      position:absolute; inset:0;
+      background:radial-gradient(circle at 30% 70%, rgba(255,255,255,0.12) 0%, transparent 50%);
+      pointer-events:none;
+    }
+    .hero>*{ position:relative; z-index:1; }
+    .hero h1{
+      font-size:3.3rem;
+      margin-bottom:12px;
+      animation:pulse-scale 2.5s ease-in-out infinite;
+      text-shadow:3px 3px 8px rgba(0,0,0,0.28);
+      font-weight:800;
+      letter-spacing:1px;
+    }
+    .hero p{
+      font-size:1.25rem;
+      opacity:0.98;
+      text-shadow:1px 1px 3px rgba(0,0,0,0.2);
+      font-weight:300;
+      letter-spacing:0.3px;
+    }
+    .emoji-rain{
+      font-size:2.4rem;
+      animation:bounce 1.2s ease-in-out infinite;
+      display:inline-block;
+      margin:0 8px;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+    }
+
+    /* ===== BUTTONS ===== */
+    button{
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color:white;
+      border:none;
+      padding:14px 28px;
+      border-radius:12px;
+      font-size:1rem;
+      cursor:pointer;
+      transition:all .28s cubic-bezier(.34,1.56,.64,1);
+      font-weight:800;
+      margin:8px 6px;
+      box-shadow:0 8px 20px rgba(102,126,234,0.40);
+      position:relative;
+      overflow:hidden;
+      letter-spacing:0.4px;
+    }
+    button::before{
+      content:'';
+      position:absolute;
+      top:0; left:-100%;
+      width:100%; height:100%;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      transition:left .5s ease;
+    }
+    button:hover::before{ left:100%; }
+    button:hover{
+      transform:translateY(-5px) scale(1.02);
+      box-shadow:0 12px 30px rgba(102,126,234,0.58);
+    }
+    button:active{ transform:translateY(-2px) scale(0.98); }
+    button:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+
+    .control-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+      margin:25px 0;
+      position:relative;
+      z-index:2;
+    }
+
+    /* ===== CAKE SECTION ===== */
+    .cake-section h2{
+      text-align:center;
+      color:#667eea;
+      margin-bottom:30px;
+      font-size:2.2rem;
+      font-weight:800;
+    }
+
+    .cake-container{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:28px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ============= YOUR PREVIEW-STYLE CAKE (IMPLEMENTED) ============= */
+    .cake-stage{
+      position: relative;
+      width: 380px;
+      height: 320px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      filter: drop-shadow(0 28px 55px rgba(0,0,0,0.18));
+    }
+
+    .plate{
+      position:absolute;
+      bottom:0;
+      left:50%;
+      transform:translateX(-50%);
+      width:360px;
+      height:45px;
+      border-radius:50%;
+      background:linear-gradient(#fff,#dfe8f5);
+      box-shadow:0 20px 35px rgba(0,0,0,.28),
+                 inset 0 2px 6px rgba(255,255,255,.85),
+                 inset 0 -6px 10px rgba(0,0,0,.06);
+      z-index:0;
+    }
+
+    .cake-whole{
+      position:absolute;
+      bottom:40px;
+      left:50%;
+      transform:translateX(-50%);
+      width:320px;
+      height:180px;
+      z-index:2;
+      transform-origin: 50% 90%;
+    }
+
+    /* CUT removes a wedge from the whole cake */
+    .cake-stage.cut .cake-whole{
+      clip-path: polygon(0% 0%, 90% 0%, 100% 34%, 100% 66%, 90% 100%, 0% 100%);
+    }
+
+    .cake-body{
+      position:absolute;
+      bottom:0;
+      width:100%;
+      height:140px;
+      border-radius:0 0 160px 160px;
+      background:linear-gradient(#2b2c86,#1f206f);
+      box-shadow:inset 0 15px 25px rgba(255,255,255,.08),
+                 0 10px 25px rgba(0,0,0,.22);
+      border: 2px solid rgba(255,255,255,0.08);
+    }
+
+    .cake-top{
+      position:absolute;
+      top:0;
+      width:100%;
+      height:80px;
+      border-radius:50%;
+      background:linear-gradient(#46d6ff,#1aa9de);
+      box-shadow:inset 0 15px 20px rgba(255,255,255,.18),
+                 inset 0 -15px 20px rgba(0,0,0,.18);
+      border: 2px solid rgba(255,255,255,0.14);
+      overflow:hidden;
+    }
+
+    .icing{
+      position:absolute;
+      top:45px;
+      width:100%;
+      height:55px;
+      border-radius:50%;
+      background:linear-gradient(#ffffff,#eef4fb);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.14);
+    }
+
+    /* Drip look */
+    .icing::after{
+      content:'';
+      position:absolute;
+      left:-12px; right:-12px;
+      top:24px;
+      height:58px;
+      background:
+        radial-gradient(circle at 6% 0%,  rgba(255,255,255,1) 0 18px, transparent 19px),
+        radial-gradient(circle at 18% 0%, rgba(255,255,255,1) 0 14px, transparent 15px),
+        radial-gradient(circle at 32% 0%, rgba(255,255,255,1) 0 20px, transparent 21px),
+        radial-gradient(circle at 48% 0%, rgba(255,255,255,1) 0 16px, transparent 17px),
+        radial-gradient(circle at 62% 0%, rgba(255,255,255,1) 0 22px, transparent 23px),
+        radial-gradient(circle at 76% 0%, rgba(255,255,255,1) 0 15px, transparent 16px),
+        radial-gradient(circle at 90% 0%, rgba(255,255,255,1) 0 19px, transparent 20px);
+      opacity:.95;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,0.10));
+    }
+
+    .waves{
+      position:absolute;
+      bottom:30px;
+      width:100%;
+      height:80px;
+      z-index:3;
+      pointer-events:none;
+    }
+    .wave{
+      position:absolute;
+      width:100%;
+      height:25px;
+      border-radius:0 0 150px 150px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+      clip-path: polygon(0 34%, 7% 22%, 14% 34%, 21% 20%, 28% 34%, 35% 18%, 42% 34%, 49% 22%, 56% 34%, 63% 20%, 70% 34%, 77% 18%, 84% 34%, 91% 22%, 98% 34%, 100% 28%, 100% 100%, 0 100%);
+    }
+    .wave1{ top:0;  background:linear-gradient(#66ff9a,#2bd66f); }
+    .wave2{ top:25px;background:linear-gradient(#ff77c8,#e43aa1); }
+    .wave3{ top:50px;background:linear-gradient(#7de2ff,#2fb7e8); }
+
+    .beads{
+      position:absolute;
+      bottom:-10px;
+      width:100%;
+      display:flex;
+      justify-content:space-around;
+      z-index:4;
+      pointer-events:none;
+    }
+    .bead{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      box-shadow: inset 0 3px 5px rgba(255,255,255,.4),
+                  inset 0 -3px 5px rgba(0,0,0,.2),
+                  0 4px 8px rgba(0,0,0,0.10);
+    }
+
+    /* sprinkles on top */
+    .sprinkles{ position:absolute; inset:0; pointer-events:none; }
+    .sprinkle{
+      position:absolute;
+      width:14px; height:7px;
+      border-radius:999px;
+      transform:rotate(var(--r));
+      box-shadow:0 3px 6px rgba(0,0,0,0.10);
+      opacity:0.95;
+    }
+
+    /* Candles on cake top */
+    .candles-container{
+      position:absolute;
+      top:45px;
+      left:50%;
+      transform:translateX(-50%);
+      width:270px;
+      display:flex;
+      justify-content:space-around;
+      z-index:10;
+      pointer-events:none;
+    }
+    .candle{
+      position:relative;
+      width:14px;
+      height:58px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.10), rgba(0,0,0,0.10));
+      box-shadow:0 8px 14px rgba(0,0,0,0.22);
+      border:2px solid rgba(255,255,255,0.22);
+      animation:candle-appear .5s ease-out;
+    }
+    .candle::after{
+      content:"";
+      position:absolute;
+      inset:6px;
+      border-radius:999px;
+      background:linear-gradient(180deg, var(--c1), var(--c2));
+    }
+    .candle.lit::before{
+      content:"🔥";
+      position:absolute;
+      top:-26px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:28px;
+      filter: drop-shadow(0 0 10px #ff6b00) drop-shadow(0 0 18px #ff4500);
+    }
+
+    /* ===== KNIFE OVERLAY (AUTO-SIZED, REALISTIC) ===== */
+    .knife-overlay{
+      position:absolute;
+      width:min(430px, calc(100% + 110px));
+      height:200px;
+      top:54%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      z-index:999;
+      pointer-events:none;
+      opacity:0;
+      filter:drop-shadow(0 16px 16px rgba(0,0,0,0.25));
+    }
+    .knife-overlay.run{ animation:knifeOverlayFade 1.25s ease-in-out forwards; }
+    .knife-overlay .knife{
+      position:absolute;
+      left:-120px;
+      top:86px;
+      width:520px;
+      height:70px;
+      transform-origin:25% 50%;
+      transform:rotate(-10deg);
+    }
+    .knife-overlay.run .knife{ animation:knifeCutMotion 1.25s cubic-bezier(.2,.9,.15,1) forwards; }
+
+    .knife .blade{
+      position:absolute;
+      left:0; top:18px;
+      width:340px; height:40px;
+      border-radius:6px 40px 40px 6px;
+      background:linear-gradient(180deg,#f7f7f7 0%,#d9dde3 35%,#c6cbd4 55%,#f4f6f8 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.75),
+                 inset 0 -2px 3px rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+    .knife .blade::after{
+      content:'';
+      position:absolute; left:0; top:6px;
+      width:100%; height:4px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.55), rgba(255,255,255,0.1));
+      opacity:.6;
+    }
+    .knife .blade-highlight{
+      position:absolute;
+      left:26px; top:-10px;
+      width:250px; height:70px;
+      transform:rotate(-8deg);
+      background:linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.62) 35%,
+        rgba(255,255,255,0.18) 65%,
+        rgba(255,255,255,0) 100%);
+      opacity:.85;
+    }
+    .knife .blade-edge{
+      position:absolute; left:0; bottom:2px;
+      width:100%; height:7px;
+      background:linear-gradient(90deg,#a6adb8 0%,#f8fafc 40%,#b3bac4 100%);
+      opacity:.92;
+      clip-path:polygon(0 40%, 100% 0, 100% 100%, 0 100%);
+    }
+    .knife .guard{
+      position:absolute;
+      left:330px; top:26px;
+      width:20px; height:28px;
+      border-radius:9px;
+      background:linear-gradient(180deg,#b7bcc6 0%,#8e95a3 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.6),
+                 inset 0 -2px 3px rgba(0,0,0,.18);
+    }
+    .knife .handle{
+      position:absolute;
+      left:348px; top:22px;
+      width:150px; height:38px;
+      border-radius:16px 24px 24px 16px;
+      background:linear-gradient(180deg,#2d2f36 0%,#14161b 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.08),
+                 inset 0 -2px 4px rgba(0,0,0,.4);
+    }
+    .knife .rivet{
+      position:absolute; top:50%;
+      width:7px; height:7px; border-radius:50%;
+      transform:translateY(-50%);
+      background:radial-gradient(circle at 35% 35%, #fff 0%, #c6cbd4 35%, #7b8392 100%);
+      opacity:.9;
+    }
+    .knife .r1{left:24px}
+    .knife .r2{left:64px}
+    .knife .r3{left:104px}
+
+    /* ===== FLYING SLICE (MATCHES PREVIEW-STYLE CAKE) ===== */
+    .cake-slice-fly{
+      position:absolute;
+      right:10px;
+      top:120px;
+      width:110px;
+      height:150px;
+      z-index:2000;
+      pointer-events:none;
+      transform-origin:20% 70%;
+      filter:drop-shadow(0 14px 18px rgba(0,0,0,0.28));
+      opacity:0;
+    }
+
+    .cake-slice-fly .slice-top{
+      position:absolute;
+      left:6px; right:6px;
+      top:0;
+      height:38px;
+      border-radius:50%;
+      background:linear-gradient(#46d6ff,#1aa9de);
+      border:2px solid rgba(255,255,255,0.14);
+      box-shadow:inset 0 10px 14px rgba(255,255,255,0.16),
+                 inset 0 -10px 14px rgba(0,0,0,0.16);
+    }
+    .cake-slice-fly .slice-icing{
+      position:absolute;
+      left:0; right:0;
+      top:20px;
+      height:30px;
+      border-radius:999px;
+      background:linear-gradient(#fff,#eef4fb);
+      box-shadow:0 8px 12px rgba(0,0,0,0.10);
+    }
+    .cake-slice-fly .slice-body{
+      position:absolute;
+      left:0; right:0;
+      top:34px;
+      bottom:0;
+      border-radius:12px 16px 16px 12px;
+      background:linear-gradient(#2b2c86,#1f206f);
+      border:2px solid rgba(255,255,255,0.08);
+      clip-path:polygon(0 0, 100% 18%, 100% 82%, 0 100%);
+      box-shadow: inset 0 10px 14px rgba(255,255,255,0.06);
+    }
+
+    .cake-slice-fly.fly{
+      animation:slicePopFly .9s cubic-bezier(.2,.9,.2,1) forwards,
+               sliceSettle .6s ease-in-out .9s forwards;
+    }
+
+    /* ===== Gallery + Message (unchanged) ===== */
+    .gallery-section h2{ color:#667eea; text-align:center; margin-bottom:30px; font-size:2.2rem; font-weight:800; }
+    .gallery-section{ display:none; }
+    .gallery{
+      display:flex;
+      flex-direction:column;
+      gap:30px;
+      padding:20px 0;
+    }
+    .gallery-item{
+      position:relative;
+      overflow:hidden;
+      border-radius:15px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.12);
+      cursor:pointer;
+      transition:all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:800;
+      border:2px solid rgba(255,255,255,0.1);
+      width:450px;
+      height:450px;
+    }
+    .gallery-item:nth-child(odd){ margin-left:0; margin-right:auto; }
+    .gallery-item:nth-child(even){ margin-left:auto; margin-right:0; }
+    .gallery-item:hover{
+      transform:scale(1.08) translateY(-8px);
+      box-shadow:0 15px 40px rgba(102,126,234,0.3);
+      border-color:rgba(255,255,255,0.3);
+    }
+    .gallery-item img{ width:100%; height:100%; object-fit:contain; transition:transform .4s ease; }
+    .gallery-item:hover img{ transform:scale(1.1); }
+
+    .message-section{
+      text-align:center;
+      padding:40px 30px;
+      background:linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(240,147,251,0.15) 100%);
+      border-radius:20px;
+      margin-top:40px;
+      display:none;
+    }
+    .message-section h2{ color:#667eea; font-size:2rem; margin-bottom:20px; font-weight:800; }
+    .message-section p{ font-size:1.1rem; color:#555; line-height:1.8; margin-bottom:15px; }
+
+    .confetti{
+      position:fixed;
+      pointer-events:none;
+      font-size:28px;
+      animation:confetti-fall 3.5s ease-in forwards;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10));
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px){
+      section{ padding:25px 20px; margin:20px; border-radius:15px; }
+      .hero h1{ font-size:2.2rem; }
+      .cake-stage{ width:320px; height:290px; }
+      .plate{ width:300px; }
+      .cake-whole{ width:270px; height:160px; bottom:36px; }
+      .candles-container{ width:230px; }
+    }
+    @media (max-width: 480px){
+      .hero h1{ font-size:1.8rem; }
+      .cake-stage{ width:280px; height:270px; }
+      .plate{ width:270px; }
+      .cake-whole{ width:240px; height:150px; }
+      .candles-container{ width:200px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <h1>🎂 Happy Birthday Priyansh❤️🎉</h1>
+      <p id="wish-message">Wishing you a day filled with joy, laughter, and magical moments!</p>
+      <div style="font-size: 2rem; margin-top: 15px;">
+        <span class="emoji-rain">🎈</span>
+        <span class="emoji-rain" style="animation-delay: 0.1s;">🎊</span>
+        <span class="emoji-rain" style="animation-delay: 0.2s;">🎁</span>
+        <span class="emoji-rain" style="animation-delay: 0.3s;">✨</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Cake Section -->
+    <section class="cake-section">
+      <h2>🎂 Let's Prepare Your Cake</h2>
+
+      <div class="cake-container">
+        <!-- cake display area -->
+        <div id="cake-display" class="cake-stage"></div>
+
+        <div class="cake-info">
+          <div class="stats" style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+            <div class="stat" style="background:linear-gradient(135deg, rgba(102,126,234,0.08), rgba(240,147,251,0.08)); padding:14px 20px; border-radius:10px; font-weight:800; color:#667eea; border:2px solid rgba(102,126,234,0.2);">
+              Status: <span id="status-text">Building...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group" id="cut-button-group" style="display:none;">
+          <button onclick="cutCake()" id="cut-btn">🔪 Cut the Cake!</button>
+        </div>
+
+        <div class="control-group" id="surprise-button-group" style="display:none;">
+          <button onclick="showSurprise()">🎉 Here is the Surprise for You!</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="gallery-section" id="gallery-section">
+      <h2>📸 Birthday Memories</h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <!-- Message -->
+    <section class="message-section" id="message-section">
+      <h2>💝 Special Birthday Message</h2>
+      <p>Another year older, another year wiser, another year more fabulous!</p>
+      <p>May your birthday be as sweet as cake and as bright as candles on your cake.</p>
+      <p>Today is YOUR day - Celebrate it with all the joy in the world! 🌟</p>
+      <p style="margin-top: 20px; font-weight: 800; color: #667eea;">Thank you for being amazing!</p>
+    </section>
+  </div>
+
+  <!-- Audio -->
+  <audio id="birthday-song" style="display:none;"></audio>
+
+  <script>
+    const state = {
+      layerCount: 0,
+      candleCount: 0,
+      candlesLit: false,
+      cakeBuildingComplete: false,
+      cakeCut: false,
+      sliceSpawned: false
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      buildCakeAnimated();
+    });
+
+    async function buildCakeAnimated() {
+      updateStatus('🎂 Setting up the cake...');
+      await delay(600);
+
+      // we keep your "layerCount" progression as a fun build-up,
+      // but visually we’ll use it to “fade in” details (waves, beads, sprinkles)
+      for (let i = 1; i <= 4; i++) {
+        state.layerCount = i;
+        renderCake();
+        playSound('layer');
+        await delay(650);
+      }
+
+      updateStatus('🕯️ Adding candles...');
+      await delay(400);
+
+      for (let i = 1; i <= 3; i++) {
+        state.candleCount = i;
+        renderCake();
+        playSound('candle');
+        await delay(450);
+      }
+
+      state.candlesLit = true;
+      renderCake();
+      playSound('ignite');
+
+      state.cakeBuildingComplete = true;
+      updateStatus('✨ Ready to celebrate!');
+      document.getElementById('cut-button-group').style.display = 'flex';
+    }
+
+    function renderCake() {
+      const host = document.getElementById('cake-display');
+      host.innerHTML = '';
+
+      // Stage elements
+      const plate = document.createElement('div');
+      plate.className = 'plate';
+
+      const whole = document.createElement('div');
+      whole.className = 'cake-whole';
+
+      const top = document.createElement('div');
+      top.className = 'cake-top';
+
+      // sprinkles appear gradually as layerCount increases
+      if (state.layerCount >= 2) {
+        const spr = document.createElement('div');
+        spr.className = 'sprinkles';
+        const colors = ['#ff4d6d','#ffd166','#06d6a0','#4cc9f0','#f72585','#b8f2e6','#ffa62b'];
+        const sprinkleCount = state.layerCount === 2 ? 10 : state.layerCount === 3 ? 18 : 26;
+
+        for (let i = 0; i < sprinkleCount; i++) {
+          const s = document.createElement('div');
+          s.className = 'sprinkle';
+          s.style.background = colors[Math.floor(Math.random()*colors.length)];
+          s.style.left = (10 + Math.random()*80) + '%';
+          s.style.top  = (10 + Math.random()*50) + '%';
+          s.style.setProperty('--r', (Math.random()*160 - 80) + 'deg');
+          spr.appendChild(s);
+        }
+        top.appendChild(spr);
+      }
+
+      const icing = document.createElement('div');
+      icing.className = 'icing';
+
+      const body = document.createElement('div');
+      body.className = 'cake-body';
+
+      // Waves appear after layer 2
+      if (state.layerCount >= 3) {
+        const waves = document.createElement('div');
+        waves.className = 'waves';
+        waves.innerHTML = `
+          <div class="wave wave1"></div>
+          <div class="wave wave2"></div>
+          <div class="wave wave3"></div>
+        `;
+        whole.appendChild(waves);
+      }
+
+      // Beads appear at final layer
+      if (state.layerCount >= 4) {
+        const beads = document.createElement('div');
+        beads.className = 'beads';
+        const beadColors = ['#ffd166','#ff7aa8','#4cc9f0','#b8f2e6','#a1ff0a','#ffb703'];
+        for (let i = 0; i < 16; i++) {
+          const b = document.createElement('div');
+          b.className = 'bead';
+          b.style.background = beadColors[i % beadColors.length];
+          beads.appendChild(b);
+        }
+        whole.appendChild(beads);
+      }
+
+      // Candles container (your state.candleCount)
+      const candlesContainer = document.createElement('div');
+      candlesContainer.className = 'candles-container';
+      candlesContainer.id = 'candles-container';
+
+      const candlePairs = [
+        ['#ff4d6d', '#ff9f1c'],
+        ['#4cc9f0', '#4361ee'],
+        ['#06d6a0', '#b8f2e6'],
+        ['#ffd166', '#f72585'],
+        ['#ff7aa8', '#4cc9f0']
+      ];
+
+      for (let i = 0; i < state.candleCount; i++) {
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        const [c1,c2] = candlePairs[i % candlePairs.length];
+        candle.style.setProperty('--c1', c1);
+        candle.style.setProperty('--c2', c2);
+        if (state.candlesLit) candle.classList.add('lit');
+        candlesContainer.appendChild(candle);
+      }
+
+      whole.appendChild(top);
+      whole.appendChild(icing);
+      whole.appendChild(body);
+
+      host.appendChild(whole);
+      host.appendChild(candlesContainer);
+      host.appendChild(plate);
+
+      // cut state
+      host.classList.toggle('cut', state.cakeCut);
+
+      // keep slice visible after cut (if already spawned)
+      if (state.cakeCut && state.sliceSpawned) {
+        const existing = host.querySelector('.cake-slice-fly');
+        if (!existing) {
+          const slice = buildSliceElement();
+          host.appendChild(slice);
+          slice.style.transform = 'translate(-190px,-20px) rotate(-10deg)';
+          slice.style.opacity = '1';
+        }
+      }
+    }
+
+    function buildSliceElement() {
+      const slice = document.createElement('div');
+      slice.className = 'cake-slice-fly';
+      slice.innerHTML = `
+        <div class="slice-top"></div>
+        <div class="slice-icing"></div>
+        <div class="slice-body"></div>
+      `;
+      return slice;
+    }
+
+    function cutCake() {
+      if (!state.cakeBuildingComplete) {
+        updateStatus('Wait for cake to be ready!');
+        return;
+      }
+
+      updateStatus('🔪 Cutting the cake...');
+      state.cakeCut = true;
+      document.getElementById('cut-btn').disabled = true;
+
+      const host = document.getElementById('cake-display');
+
+      // Knife overlay
+      const knifeOverlay = document.createElement('div');
+      knifeOverlay.className = 'knife-overlay';
+      knifeOverlay.innerHTML = `
+        <div class="knife">
+          <div class="blade">
+            <div class="blade-highlight"></div>
+            <div class="blade-edge"></div>
+          </div>
+          <div class="guard"></div>
+          <div class="handle">
+            <span class="rivet r1"></span>
+            <span class="rivet r2"></span>
+            <span class="rivet r3"></span>
+          </div>
+        </div>
+      `;
+      host.appendChild(knifeOverlay);
+      requestAnimationFrame(() => knifeOverlay.classList.add('run'));
+
+      const slice = buildSliceElement();
+
+      setTimeout(() => {
+        host.classList.add('cut');
+
+        if (!state.sliceSpawned) {
+          state.sliceSpawned = true;
+          host.appendChild(slice);
+          void slice.offsetWidth;
+          slice.classList.add('fly');
+        }
+
+        playSound('slice');
+      }, 520);
+
+      setTimeout(() => {
+        createConfetti();
+        playSong();
+      }, 750);
+
+      setTimeout(() => {
+        knifeOverlay.remove();
+        document.getElementById('cut-button-group').style.display = 'none';
+        document.getElementById('surprise-button-group').style.display = 'flex';
+        updateStatus('🎉 Cake is cut! Now for the surprise...');
+      }, 1400);
+    }
+
+    function showSurprise() {
+      document.getElementById('gallery-section').style.display = 'block';
+      document.getElementById('message-section').style.display = 'block';
+      document.getElementById('surprise-button-group').style.display = 'none';
+      updateStatus('✨ Enjoy your birthday surprise!');
+
+      setTimeout(() => {
+        document.getElementById('gallery-section').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+
+    function initializeGallery() {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+
+      for (let i = 1; i <= 8; i++) {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `<img src="assets/photo${i}.jpeg" alt="Photo ${i}">`;
+        gallery.appendChild(item);
+      }
+    }
+
+    function playSong() {
+      const audio = document.getElementById('birthday-song');
+      audio.src = '/assets/birthday-song.mp3';
+      audio.play().catch(() => {
+        console.log('Song file not found or cannot play. Put birthday-song.mp3 in /assets/.');
+      });
+    }
+
+    function createConfetti() {
+      const emojis = ['🎉','🎊','✨','🎈','🎁','⭐','💝'];
+      for (let i = 0; i < 40; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.top = (Math.random() * 50 - 50) + 'px';
+        confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+        confetti.style.animationDelay = Math.random() * 0.3 + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+
+    function playSound(type) {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const now = audioContext.currentTime;
+
+        if (type === 'layer') {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.connect(gain); gain.connect(audioContext.destination);
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.setValueAtTime(320, now + 0.15);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.setValueAtTime(0, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'candle') {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.connect(gain); gain.connect(audioContext.destination);
+          osc.frequency.setValueAtTime(820, now);
+          osc.frequency.setValueAtTime(620, now + 0.1);
+          gain.gain.setValueAtTime(0.10, now);
+          gain.gain.setValueAtTime(0, now + 0.1);
+          osc.start(now); osc.stop(now + 0.1);
+        } else if (type === 'ignite') {
+          for (let i = 0; i < 3; i++) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(720 + i * 50, now + i * 0.08);
+            osc.frequency.setValueAtTime(520 + i * 50, now + i * 0.08 + 0.06);
+            gain.gain.setValueAtTime(0.12, now + i * 0.08);
+            gain.gain.setValueAtTime(0, now + i * 0.08 + 0.06);
+            osc.start(now + i * 0.08);
+            osc.stop(now + i * 0.08 + 0.06);
+          }
+        } else if (type === 'slice') {
+          for (let i = 0; i < 3; i++) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.frequency.setValueAtTime(320 + i * 110, now + i * 0.1);
+            osc.frequency.setValueAtTime(220 + i * 110, now + i * 0.1 + 0.05);
+            gain.gain.setValueAtTime(0.05, now + i * 0.1);
+            gain.gain.setValueAtTime(0, now + i * 0.1 + 0.05);
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 0.05);
+          }
+        }
+      } catch (e) {
+        console.log('Sound skipped');
+      }
+    }
+
+    function updateStatus(text) {
+      document.getElementById('status-text').textContent = text;
+    }
+    function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    // When gallery section is shown, initialize
+    const observer = new MutationObserver(() => {
+      if (document.getElementById('gallery-section').style.display !== 'none') {
+        initializeGallery();
+      }
+    });
+    observer.observe(document.getElementById('gallery-section'), { attributes:true, attributeFilter:['style'] });
+  </script>
+</body>
+</html>
